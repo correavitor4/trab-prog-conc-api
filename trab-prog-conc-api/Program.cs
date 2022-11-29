@@ -1,3 +1,7 @@
+using Nancy.Json;
+using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using trab_prog_conc_api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,4 +57,29 @@ app.MapGet("/", () =>
 {
     return "Hello World";
 });
+
+app.MapGet("/assets", (int? page) => {
+    var ret = Paginate(assetsList: allAssetList, page);
+    var res = JsonConvert.SerializeObject(ret);
+    return Results.Ok(res);
+});
+
+
+PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
+{
+    int page = 1;
+    if(pageParam is not null)
+    {
+        page = (int)pageParam;
+    }
+    var rollsPerPage = 25;
+    var assets = assetsList.Skip(rollsPerPage * (page - 1)).Take(rollsPerPage).ToList();
+    return new PaginetedReturn { 
+        assets = assets,
+        rollsPerPage = rollsPerPage,
+        count = assets.Count,
+        page = page,
+    };
+}
+
 app.Run();
