@@ -3,8 +3,8 @@
     public class PaginetedReturn
     {
         public int count;
+        public int page;
         public int rollsPerPage;
         public List<Asset> assets;
-        public int page;
     }
 }
