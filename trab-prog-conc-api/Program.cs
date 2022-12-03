@@ -68,13 +68,30 @@ app.MapGet("/", () =>
 });
 
 app.MapGet("/assets", (int? page) => {
-    var ret = Paginate(assetsList: allAssetList, page);
-    var res = JsonConvert.SerializeObject(ret);
+    var res = Paginate(allAssetList, page);
+    return Results.Ok(res);
+});
+
+app.MapGet("/{companyName}/assets", (string companyName, int? page) =>
+{
+    var res = GetAssetsByCompanyName(companyName, page);
     return Results.Ok(res);
 });
 
 
-PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
+string GetAssetsByCompanyName(string companyName,int? page)
+{
+    if(page is null)
+    {
+        page = 1;
+    }
+    var assets = allAssetList.Where(x => x.CompanyName.Equals(companyName)).ToList();
+    return Paginate(assets, (int)page);
+}
+
+
+
+string Paginate(List<Asset> assetsList,int? pageParam)
 {
     int page = 1;
     if(pageParam is not null)
@@ -83,12 +100,13 @@ PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
     }
     var rollsPerPage = 25;
     var assets = assetsList.Skip(rollsPerPage * (page - 1)).Take(rollsPerPage).ToList();
-    return new PaginetedReturn { 
+    var res = new PaginetedReturn { 
         assets = assets,
         rollsPerPage = rollsPerPage,
-        count = assets.Count,
+        count = assetsList.Count,
         page = page,
     };
+    return JsonConvert.SerializeObject(res);
 }
 
 app.Run();
