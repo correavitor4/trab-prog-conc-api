@@ -69,17 +69,25 @@ app.MapGet("/", () =>
 
 app.MapGet("/assets", (int? page) => {
     var res = Paginate(allAssetList, page);
+    if(res.assets.Count < 1)
+    {
+        return Results.NoContent();
+    }
     return Results.Ok(res);
 });
 
 app.MapGet("/{companyName}/assets", (string companyName, int? page) =>
 {
     var res = GetAssetsByCompanyName(companyName, page);
+    if(res.assets.Count < 1)
+    {
+        return Results.NoContent();
+    }
     return Results.Ok(res);
 });
 
 
-string GetAssetsByCompanyName(string companyName,int? page)
+PaginetedReturn GetAssetsByCompanyName(string companyName,int? page)
 {
     if(page is null)
     {
@@ -91,7 +99,7 @@ string GetAssetsByCompanyName(string companyName,int? page)
 
 
 
-string Paginate(List<Asset> assetsList,int? pageParam)
+PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
 {
     int page = 1;
     if(pageParam is not null)
@@ -106,7 +114,7 @@ string Paginate(List<Asset> assetsList,int? pageParam)
         count = assetsList.Count,
         page = page,
     };
-    return JsonConvert.SerializeObject(res);
+    return res;
 }
 
 app.Run();

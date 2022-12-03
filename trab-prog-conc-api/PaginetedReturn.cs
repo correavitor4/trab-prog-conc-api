@@ -2,9 +2,9 @@
 {
     public class PaginetedReturn
     {
-        public int count;
-        public int page;
-        public int rollsPerPage;
-        public List<Asset> assets;
+        public int count { get; set; }
+        public int page { get; set; }
+        public int rollsPerPage { get; set; }
+        public List<Asset> assets { get; set; }
     }
 }

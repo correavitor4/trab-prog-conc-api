@@ -2,8 +2,8 @@
 {
     public class Asset
     {
-        public readonly string CompanyName;
-        public readonly string Symbol;
+        public string CompanyName { get; set; }
+        public string Symbol { get; set; }
         private Owner? Owner { get; set; }
         public Asset(string companyName, string symbol)
         {
