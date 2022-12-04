@@ -4,7 +4,7 @@
     {
         public string CompanyName { get; set; }
         public string Symbol { get; set; }
-        private Owner? Owner { get; set; }
+        public Owner? Owner { get; set; }
         public Asset(string companyName, string symbol)
         {
             CompanyName = companyName;
