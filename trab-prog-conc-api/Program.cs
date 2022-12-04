@@ -111,7 +111,7 @@ PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
     var res = new PaginetedReturn { 
         assets = assets,
         rollsPerPage = rollsPerPage,
-        count = assetsList.Count,
+        count = assets.Count,
         page = page,
     };
     return res;
