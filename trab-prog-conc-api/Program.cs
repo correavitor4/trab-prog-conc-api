@@ -39,15 +39,14 @@ var allAssetList = new List<Asset>();
 void GenerateAllAssetList()
 {
     var random = new Random();
-    foreach (var ast in assetListType)
+    var nAssets = random.Next(100, 100000);
+    for(int i=0; i< nAssets; i++)
     {
-        var nAssets = random.Next(100, 10000);
-        for (int i = 0; i < nAssets; i++)
-        {
-            allAssetList.Add(ast);
-        }
+        var index = random.Next(0, assetListType.Count);
+        allAssetList.Add(assetListType[index]);
     }
 }
+
 
 GenerateAllAssetList();
 
@@ -67,7 +66,9 @@ app.MapGet("/", () =>
     return "Hello World";
 });
 
+
 app.MapGet("/assets", (int? page) => {
+    var availableAssets = allAssetList.Where(x => x.IsAvailable()).ToList();
     var res = Paginate(allAssetList, page);
     if(res.assets.Count < 1)
     {
@@ -76,6 +77,28 @@ app.MapGet("/assets", (int? page) => {
     return Results.Ok(res);
 });
 
+app.MapGet("/assets/{guid:guid}", (Guid guid) =>
+{
+    var asset = allAssetList.FirstOrDefault(x => x.Guid.CompareTo(guid) == 0);
+    if (asset is null)
+    {
+        return Results.NoContent();
+    }
+
+
+    var random = new Random();
+    var res = random.Next(1, 8);
+
+    if (res == 3)
+    {
+        return Results.NoContent();
+    }
+
+    
+    return Results.Ok(asset);
+});
+
+/*
 app.MapGet("/{companyName}/assets", (string companyName, int? page) =>
 {
     var res = GetAssetsByCompanyName(companyName, page);
@@ -86,7 +109,9 @@ app.MapGet("/{companyName}/assets", (string companyName, int? page) =>
     return Results.Ok(res);
 });
 
+*/
 
+/*
 PaginetedReturn GetAssetsByCompanyName(string companyName,int? page)
 {
     if(page is null)
@@ -96,8 +121,7 @@ PaginetedReturn GetAssetsByCompanyName(string companyName,int? page)
     var assets = allAssetList.Where(x => x.CompanyName.Equals(companyName)).ToList();
     return Paginate(assets, (int)page);
 }
-
-
+*/
 
 PaginetedReturn Paginate(List<Asset> assetsList,int? pageParam)
 {

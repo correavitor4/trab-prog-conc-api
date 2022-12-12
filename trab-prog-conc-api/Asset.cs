@@ -2,26 +2,34 @@
 {
     public class Asset
     {
+        public Guid Guid { get; set; }
         public string CompanyName { get; set; }
         public string Symbol { get; set; }
-        public Owner? Owner { get; set; }
+        private bool Available { get; set; }
         public Asset(string companyName, string symbol)
         {
+            Guid = Guid.NewGuid();
             CompanyName = companyName;
             Symbol = symbol;
+            Available = true;
         }
 
-        public void BuyAsset(Guid OwnerId, string OwnerName)
+        public void SetRandomDisponibility()
         {
-            Owner.Id = OwnerId;
-            Owner.Name = OwnerName;
+            if(Available is false)
+            {
+                return;
+            }
+            var random = new Random();
+            Available = random.Next(2) == 1;
+        }
+
+        public bool IsAvailable()
+        {
+            return Available;
         }
 
     }
 
-    public class Owner
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-    }
+
 }
